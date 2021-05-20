@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # File generated according to Generator/ClassesRef/DataND.csv
 # WARNING! All changes made in this file will be lost!
-"""Method code available at https://github.com/Eomys/SciDataTool/tree/master/SciDataTool/Methods//DataND
+"""Method code available at https://github.com/Eomys/pyleecan/tree/master/SciDataTool/Methods//DataND
 """
 
 from os import linesep
@@ -39,11 +39,6 @@ try:
     from ..Methods.DataND.compare_phase_along import compare_phase_along
 except ImportError as error:
     compare_phase_along = error
-
-try:
-    from ..Methods.DataND.compress import compress
-except ImportError as error:
-    compress = error
 
 try:
     from ..Methods.DataND.convert import convert
@@ -130,11 +125,6 @@ try:
 except ImportError as error:
     rebuild_symmetries = error
 
-try:
-    from ..Methods.DataND.set_Ftparameters import set_Ftparameters
-except ImportError as error:
-    set_Ftparameters = error
-
 
 from numpy import array, array_equal
 from ._check import InitUnKnowClassError
@@ -199,15 +189,6 @@ class DataND(Data):
         )
     else:
         compare_phase_along = compare_phase_along
-    # cf Methods.DataND.compress
-    if isinstance(compress, ImportError):
-        compress = property(
-            fget=lambda x: raise_(
-                ImportError("Can't use DataND method compress: " + str(compress))
-            )
-        )
-    else:
-        compress = compress
     # cf Methods.DataND.convert
     if isinstance(convert, ImportError):
         convert = property(
@@ -387,43 +368,20 @@ class DataND(Data):
         )
     else:
         rebuild_symmetries = rebuild_symmetries
-    # cf Methods.DataND.set_Ftparameters
-    if isinstance(set_Ftparameters, ImportError):
-        set_Ftparameters = property(
-            fget=lambda x: raise_(
-                ImportError(
-                    "Can't use DataND method set_Ftparameters: " + str(set_Ftparameters)
-                )
-            )
-        )
-    else:
-        set_Ftparameters = set_Ftparameters
     # save and copy methods are available in all object
     save = save
     copy = copy
 
-    def __init__(
-        self,
-        axes=None,
-        FTparameters=-1,
-        values=None,
-        is_real=True,
-        symbol="",
-        name="",
-        unit="",
-        normalizations=-1,
-        init_dict=None,
-        init_str=None,
-    ):
+    def __init__(self, axes=None, FTparameters=-1, values=None, is_real=True, symbol="", name="", unit="", normalizations=-1, init_dict = None, init_str = None):
         """Constructor of the class. Can be use in three ways :
         - __init__ (arg1 = 1, arg3 = 5) every parameters have name and default values
-            for SciDataTool type, -1 will call the default constructor
+            for pyleecan type, -1 will call the default constructor
         - __init__ (init_dict = d) d must be a dictionnary with property names as keys
         - __init__ (init_str = s) s must be a string
         s is the file path to load
 
         ndarray or list can be given for Vector and Matrix
-        object or dict can be given for SciDataTool Object"""
+        object or dict can be given for pyleecan Object"""
 
         if init_str is not None:  # Load from a file
             init_dict = load_init_dict(init_str)[1]
@@ -452,9 +410,7 @@ class DataND(Data):
         self.values = values
         self.is_real = is_real
         # Call Data init
-        super(DataND, self).__init__(
-            symbol=symbol, name=name, unit=unit, normalizations=normalizations
-        )
+        super(DataND, self).__init__(symbol=symbol, name=name, unit=unit, normalizations=normalizations)
         # The class is frozen (in Data init), for now it's impossible to
         # add new properties
 
@@ -464,15 +420,9 @@ class DataND(Data):
         DataND_str = ""
         # Get the properties inherited from Data
         DataND_str += super(DataND, self).__str__()
-        DataND_str += "axes = " + str(self.axes) + linesep + linesep
+        DataND_str += "axes = "+ str(self.axes) + linesep + linesep
         DataND_str += "FTparameters = " + str(self.FTparameters) + linesep
-        DataND_str += (
-            "values = "
-            + linesep
-            + str(self.values).replace(linesep, linesep + "\t")
-            + linesep
-            + linesep
-        )
+        DataND_str += "values = " + linesep + str(self.values).replace(linesep, linesep + "\t") + linesep + linesep
         DataND_str += "is_real = " + str(self.is_real) + linesep
         return DataND_str
 
@@ -495,36 +445,30 @@ class DataND(Data):
             return False
         return True
 
-    def compare(self, other, name="self"):
+    def compare(self, other, name='self'):
         """Compare two objects and return list of differences"""
 
         if type(other) != type(self):
-            return ["type(" + name + ")"]
+            return ['type('+name+')']
         diff_list = list()
 
         # Check the properties inherited from Data
-        diff_list.extend(super(DataND, self).compare(other, name=name))
-        if (other.axes is None and self.axes is not None) or (
-            other.axes is not None and self.axes is None
-        ):
-            diff_list.append(name + ".axes None mismatch")
+        diff_list.extend(super(DataND, self).compare(other,name=name))
+        if (other.axes is None and self.axes is not None) or (other.axes is not None and self.axes is None):
+            diff_list.append(name+'.axes None mismatch')
         elif self.axes is None:
             pass
         elif len(other.axes) != len(self.axes):
-            diff_list.append("len(" + name + ".axes)")
+            diff_list.append('len('+name+'.axes)')
         else:
             for ii in range(len(other.axes)):
-                diff_list.extend(
-                    self.axes[ii].compare(
-                        other.axes[ii], name=name + ".axes[" + str(ii) + "]"
-                    )
-                )
+                diff_list.extend(self.axes[ii].compare(other.axes[ii],name=name+'.axes['+str(ii)+']'))
         if other._FTparameters != self._FTparameters:
-            diff_list.append(name + ".FTparameters")
+            diff_list.append(name+'.FTparameters')
         if not array_equal(other.values, self.values):
-            diff_list.append(name + ".values")
+            diff_list.append(name+'.values')
         if other._is_real != self._is_real:
-            diff_list.append(name + ".is_real")
+            diff_list.append(name+'.is_real')
         return diff_list
 
     def __sizeof__(self):
@@ -547,7 +491,7 @@ class DataND(Data):
     def as_dict(self, **kwargs):
         """
         Convert this object in a json serializable dict (can be use in __init__).
-        Optional keyword input parameter is for internal use only
+        Optional keyword input parameter is for internal use only 
         and may prevent json serializability.
         """
 
@@ -576,7 +520,7 @@ class DataND(Data):
         return DataND_dict
 
     def _set_None(self):
-        """Set all the properties to None (except SciDataTool object)"""
+        """Set all the properties to None (except pyleecan object)"""
 
         self.axes = None
         self.FTparameters = None
@@ -598,9 +542,7 @@ class DataND(Data):
         if type(value) is list:
             for ii, obj in enumerate(value):
                 if type(obj) is dict:
-                    class_obj = import_class(
-                        "SciDataTool.Classes", obj.get("__class__"), "axes"
-                    )
+                    class_obj = import_class('SciDataTool.Classes', obj.get('__class__'), 'axes')
                     value[ii] = class_obj(init_dict=obj)
                 if value[ii] is not None:
                     value[ii].parent = self

@@ -4,7 +4,6 @@ FTparameters,,Tunable parameters for the Fourier Transforms,,dict,{},,,,,,comp_a
 values,,Values of the field,,ndarray,None,,,,,,compare_along,,,,
 is_real,,To indicate if the signal is real (use only positive frequencies),,bool,True,,,,,,compare_magnitude_along,,,,
 ,,,,,,,,,,,compare_phase_along,,,,
-,,,,,,,,,,,compress,,,,
 ,,,,,,,,,,,convert,,,,
 ,,,,,,,,,,,export_along,,,,
 ,,,,,,,,,,,extract_slices,,,,
@@ -22,4 +21,3 @@ is_real,,To indicate if the signal is real (use only positive frequencies),,bool
 ,,,,,,,,,,,plot_2D_Data_Animated,,,,
 ,,,,,,,,,,,plot_3D_Data,,,,
 ,,,,,,,,,,,rebuild_symmetries,,,,
-,,,,,,,,,,,set_Ftparameters,,,,
